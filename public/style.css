@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    background-color: white;
+    width: 100vw;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+main {
+    z-index: 0;
+    margin-top: 120px;
+}
+
+main #add-todo-div {
+    display: none;
+}
+
+main #add-todo-div.active {
+    display: block;
+}
+
+main .row:nth-child(3) {
+    overflow: auto;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+main table .delete {
+    border-radius: 50%;
+}
+
