@@ -6,12 +6,15 @@ const url = 'http://localhost:3000';
 
 togglerBtn.onclick = () => {
     addTodoDiv.classList.toggle('active');
+    togglerBtn.classList.toggle('btn-primary');
+    togglerBtn.classList.toggle('btn-danger');
     todoDivActive = !todoDivActive;
 
     if (todoDivActive) {
         togglerBtn.innerHTML = 'Hide the form';
+
     } else {
-        togglerBtn.innerHTML = 'add new TODO';
+        togglerBtn.innerHTML = 'add new TODO';     
     }
 };
 

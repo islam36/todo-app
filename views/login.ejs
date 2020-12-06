@@ -14,9 +14,9 @@
 
     <main class="container">
         <div class="row">
-            <div class="col">
+            <div class="col mb-5">
                 <div class="card shadow">
-                    <div class="card-header">
+                    <div class="card-header bg-warning">
                         <h1 class="text-center">Login</h1>
                         <% if(messages.error) { %>
                           <p class="text-danger"> <%= messages.error %> </p>
@@ -35,8 +35,8 @@
                             <button class="btn btn-block btn-primary" type="submit">Login</button>
                         </form>
                     </div>
-                    <div class="card-footer">
-                        <p class="text-center">Not registered yet? click <a href="/register">here</a> to register</p>
+                    <div class="card-footer bg-warning">
+                        <h6 class="text-center">Not registered yet? click <a href="/register">here</a> to register</h6>
                     </div>
                 </div>
             </div>

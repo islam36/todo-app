@@ -100,22 +100,31 @@ app.get('/register', checkNotAuth, (req, res) => {
 })
 
 app.post('/register', checkNotAuth, (req, res) => {
-    bcrypt.hash(req.body.password, 10)//make a hash
-    .then((hash) => {
-        User.create({
-            username: req.body.username,
-            email: req.body.email,
-            password: hash
-        })
-        .then((user) => {
-            res.redirect('/login');
-        })
-        .catch((err) => {
-            console.log(err);
-            res.redirect('/register');
-        })
+    User.findOne({ email: req.body.email })
+    .then((user) => {
+        if (user == null) {
+            bcrypt.hash(req.body.password, 10)//make a hash
+                .then((hash) => {
+                    User.create({
+                        username: req.body.username,
+                        email: req.body.email,
+                        password: hash
+                    })
+                        .then((user) => {
+                            res.redirect('/login');
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.redirect('/register');
+                        })
+                })
+                .catch(err => console.log(err));
+        }
+        else {
+            res.redirect('register.ejs');
+        }
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
 })
 
 app.post('/logout', (req, res) => {
