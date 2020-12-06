@@ -46,9 +46,9 @@
                             <div class="form-group">
                                 <label for="priority">priority</label>
                                 <select class="form-control" name="priority" id="priority">
-                                    <option value="high">high</option>
-                                    <option value="medium">medium</option>
                                     <option value="low">low</option>
+                                    <option value="medium">medium</option>
+                                    <option value="high">high</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -78,22 +78,17 @@
                         <th scope="col">status</th>
                         <th scope="col"></th>
                     </tr>
-                    <tr>
-                        <td>name</td>
-                        <td>lorem lorem lorem lorem lorem lorem lorem lorem lorem </td>
-                        <td>12/12/2020</td>
-                        <td>high</td>
-                        <td>in progress</td>
-                        <td><button class="delete btn btn-danger">&times;</button></td>
-                    </tr>
-                    <tr>
-                        <td>name</td>
-                        <td>lorem lorem lorem lorem lorem lorem lorem lorem lorem </td>
-                        <td>12/12/2020</td>
-                        <td>high</td>
-                        <td>in progress</td>
-                        <td><button class="delete btn btn-danger">&times;</button></td>
-                    </tr>
+                    <% todos.forEach((todo) => { %>
+                        <tr id="<%=todo._id.toString()%>">
+                            <td><%=todo.title %></td>
+                            <td><%=todo.description %></td>
+                            <td><%= todo.deadline %></td>
+                            <td><%= todo.priority %></td>
+                            <td><%= todo.status %></td>
+                            <td><button class="delete btn btn-danger">&times;</button></td>
+                        </tr>
+                    <% }); %>
+                    
                 </table>
             </div>
         </div>

@@ -31,11 +31,14 @@ main .row:nth-child(3) {
     overflow: auto;
 }
 
-::-webkit-scrollbar {
+body::-webkit-scrollbar {
     display: none;
+}
+
+main table::-webkit-scrollbar {
+    display: block;
 }
 
 main table .delete {
     border-radius: 50%;
 }
-

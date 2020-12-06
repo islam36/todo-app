@@ -28,6 +28,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//configuring passport
 passport.use(new LocalStrategy({
     usernameField: 'email'
     }, (email, password, done) => {
@@ -58,6 +59,8 @@ passport.deserializeUser( (id, done) => {
 });
 
 
+//check if user is authenticated
+//if no user is authenticated, redirect to '/login'
 function checkAuth(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
@@ -66,7 +69,7 @@ function checkAuth(req, res, next) {
     res.redirect('/login');
 }
 
-
+//check if user doesn't need authentication
 function checkNotAuth(req, res, next) {
     if(req.isAuthenticated()) {
        return res.redirect('/');
@@ -77,7 +80,7 @@ function checkNotAuth(req, res, next) {
 
 app.get('/', checkAuth, (req, res) => {
     res.statusCode = 200;
-    res.render('index.ejs', { username: req.user.username });
+    res.render('index.ejs', { username: req.user.username, todos: req.user.todos });
 })
 
 app.get('/login', checkNotAuth, (req, res) => {
@@ -97,12 +100,12 @@ app.get('/register', checkNotAuth, (req, res) => {
 })
 
 app.post('/register', checkNotAuth, (req, res) => {
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10)//make a hash
     .then((hash) => {
         User.create({
             username: req.body.username,
             email: req.body.email,
-            password: hash,
+            password: hash
         })
         .then((user) => {
             res.redirect('/login');
@@ -118,6 +121,47 @@ app.post('/register', checkNotAuth, (req, res) => {
 app.post('/logout', (req, res) => {
     req.logOut();
     res.redirect('/login');
+})
+
+
+app.post('/todos', checkAuth, (req, res) => {
+    if(req.body != null) {
+        User.findById(req.user._id)
+        .then((user) => {
+            user.todos.push(req.body);
+            user.save()
+            .then((user) => {
+                res.statusCode = 201;
+                res.setHeader('Content-Type', 'application/json');
+                let todo = user.todos[user.todos.length - 1];
+                res.json(todo);
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    }
+})
+
+
+app.delete('/todos/:ID', checkAuth, (req, res) => {
+    User.findById(req.user._id)
+    .then((user) => {
+        for(let i = 0; i < user.todos.length; i++) {
+            if(user.todos[i]._id.toString() == req.params.ID) {
+                user.todos.splice(i, 1);
+                break;
+            }
+        }
+
+        user.save()
+        .then((user) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ id: req.params.ID });
+        })
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
 })
 
 
