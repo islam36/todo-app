@@ -1,6 +1,10 @@
 # 📘Todo-app
 Just another web app. It's a simple web app that you can use to make TODOS.
 
+# Preview
+![preview](todo-app-preview.gif)
+
+
 # ✨Features
 - User authentication
 - Add new TODO
