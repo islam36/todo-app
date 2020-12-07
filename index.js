@@ -8,7 +8,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require('express-session');
 
-const db = 'mongodb://localhost:27017/todoAppDB';
+const db = 'mongodb+srv://mongo_user:mongo_user123@cluster0.kihsa.mongodb.net/todo-app?retryWrites=true&w=majority';
 const connect = mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
     console.log("connected to the database!");
