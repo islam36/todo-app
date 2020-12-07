@@ -2,7 +2,7 @@ let togglerBtn = document.querySelector('#add-todo-toggler');
 let addTodoDiv = document.querySelector('#add-todo-div');
 let table = document.querySelector('main table');
 let todoDivActive = false;
-const url = 'http://localhost:3000';
+const url = 'https://shrouded-dawn-15410.herokuapp.com';
 
 togglerBtn.onclick = () => {
     addTodoDiv.classList.toggle('active');
