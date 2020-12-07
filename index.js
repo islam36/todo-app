@@ -173,7 +173,9 @@ app.delete('/todos/:ID', checkAuth, (req, res) => {
     .catch(err => console.log(err));
 })
 
+const port = process.env.PORT || 3000;
+const host = '0.0.0.0';
 
-app.listen(3000, () => {
-    console.log("server running on http://localhost:3000");
+app.listen(port, host, () => {
+    console.log(`server running on ${host}:${port}`);
 })
