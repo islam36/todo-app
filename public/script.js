@@ -2,7 +2,7 @@ let togglerBtn = document.querySelector('#add-todo-toggler');
 let addTodoDiv = document.querySelector('#add-todo-div');
 let table = document.querySelector('main table');
 let todoDivActive = false;
-const url = 'https://shrouded-dawn-15410.herokuapp.com';
+
 
 togglerBtn.onclick = () => {
     addTodoDiv.classList.toggle('active');
@@ -58,7 +58,7 @@ addTodoForm.addEventListener('submit', (e) => {
     description.value = "";
 
 
-    fetch(url + '/todos', {
+    fetch('/todos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -72,6 +72,7 @@ addTodoForm.addEventListener('submit', (e) => {
     })
     .then((todo) => {
         table.appendChild(createTodo(todo));
+        window.scrollBy(0, document.body.scrollHeight);
     })
     .catch(err => console.log(err));
 });
@@ -80,7 +81,7 @@ document.querySelector('main table').addEventListener('click', (e) => {
     if(e.target.classList.contains('delete')) {
         let id = e.target.parentElement.parentElement.id;
 
-        fetch(url + '/todos/' + id, {
+        fetch('/todos/' + id, {
             method: "DELETE"
         })
         .then((response) => {
@@ -92,5 +93,71 @@ document.querySelector('main table').addEventListener('click', (e) => {
             document.getElementById(data.id).remove();
         })
         .catch(err => console.log(err));
+    }
+});
+
+
+
+document.querySelector('main table').addEventListener('click', (e) => {
+    if(e.target.tagName == 'TD') {
+        let modal = document.querySelector('.modal');
+        let titleEdit = modal.querySelector('#titleEdit')
+        let descriptionEdit = modal.querySelector('#descriptionEdit')
+        let deadlineEdit = modal.querySelector('#deadlineEdit')
+        let priorityEdit = modal.querySelector('#priorityEdit')
+        let statusEdit = modal.querySelector('#statusEdit')
+
+        let row = e.target.parentElement;
+
+        titleEdit.value = row.children[0].textContent;
+        descriptionEdit.value = row.children[1].textContent;
+        deadlineEdit.value = row.children[2].textContent;
+        priorityEdit.value = row.children[3].textContent;
+        statusEdit.value = row.children[4].textContent;
+
+        modal.classList.toggle('active');
+
+        //hide modal when user clicks on 'X'
+        modal.querySelector('.card-header span').onclick = () => {
+            modal.classList.toggle('active');
+        }
+
+        //hide modal when user clicks on button 'close'
+        modal.querySelector('.card-footer .btn-secondary').onclick = () => {
+            modal.classList.toggle('active');
+        }
+
+        modal.querySelector('.card-footer .btn-success').onclick = () => {
+            if(titleEdit.value != '' && descriptionEdit.value != '') {
+                modal.classList.toggle('active');
+
+                fetch('/todos', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: row.id,
+                        title: titleEdit.value,
+                        description: descriptionEdit.value,
+                        deadline: deadlineEdit.value,
+                        priority: priorityEdit.value,
+                        status: statusEdit.value
+                    })
+                })
+                .then((response) => {
+                    if(response.ok) {
+                        return response.json();
+                    }
+                })
+                .then((data) => {
+                    row.children[0].textContent = data.title;
+                    row.children[1].textContent = data.description;
+                    row.children[2].textContent = data.deadline;
+                    row.children[3].textContent = data.priority;
+                    row.children[4].textContent = data.status;
+                })
+            }
+        }
     }
 });

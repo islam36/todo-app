@@ -8,7 +8,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require('express-session');
 
-const db = 'mongodb+srv://mongo_user:mongo_user123@cluster0.kihsa.mongodb.net/todo-app?retryWrites=true&w=majority';
+const db = process.env.DB || 'mongodb://127.0.0.1:27017/todoAppDB';
 const connect = mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
     console.log("connected to the database!");
@@ -100,9 +100,9 @@ app.get('/register', checkNotAuth, (req, res) => {
 })
 
 app.post('/register', checkNotAuth, (req, res) => {
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email })//search for a user with that email
     .then((user) => {
-        if (user == null) {
+        if (user == null) {//email is not used before
             bcrypt.hash(req.body.password, 10)//make a hash
                 .then((hash) => {
                     User.create({
@@ -111,7 +111,7 @@ app.post('/register', checkNotAuth, (req, res) => {
                         password: hash
                     })
                         .then((user) => {
-                            res.redirect('/login');
+                            res.json({ valid: true, message: ''});
                         })
                         .catch((err) => {
                             console.log(err);
@@ -120,8 +120,11 @@ app.post('/register', checkNotAuth, (req, res) => {
                 })
                 .catch(err => console.log(err));
         }
-        else {
-            res.redirect('register.ejs');
+        else {//email already used!
+            res.json({
+                valid: false,
+                message: 'This email is already used!'
+            });
         }
     })
     .catch(err => console.log(err))
@@ -148,6 +151,32 @@ app.post('/todos', checkAuth, (req, res) => {
             .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
+    }
+})
+
+
+
+app.put('/todos', checkAuth, (req, res) => {
+    if(req.body != null) {
+        User.findById(req.user._id)
+        .then((user) => {
+            let todo = user.todos.find((x) => x._id.toString() == req.body.id);
+            if(todo != null) {
+                todo.title = req.body.title;
+                todo.description = req.body.description;
+                todo.deadline = req.body.deadline;
+                todo.priority = req.body.priority;
+                todo.status = req.body.status;    
+            }
+
+            user.save()
+            .then((user) => {
+                res.statusCode = 200;
+                res.json(todo);
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err))
     }
 })
 
